@@ -23,7 +23,7 @@ A full-stack Trello-like application with real-time synchronization using WebSoc
 
 ### Prerequisites
 
-- Node.js v16+ and npm
+- Node.js and npm
 - Trello account and API credentials
 
 ### Getting Trello API Key & Token

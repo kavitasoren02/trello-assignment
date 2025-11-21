@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import axios from "axios"
 import Card from "./Card"
 
@@ -10,21 +10,27 @@ export default function List({ list, boardId }) {
   const [isExpanded, setIsExpanded] = useState(true)
   const [cards, setCards] = useState(list.cards || [])
 
+  useEffect(() => {
+    setCards(list.cards || [])
+  }, [list.cards])
+
   const handleAddCard = async (e) => {
     e.preventDefault()
     if (!newCardName.trim()) return
 
     setIsAdding(true)
     try {
-      await axios.post(`${API_BASE}/tasks`, {
+      const response = await axios.post(`${API_BASE}/tasks`, {
         listId: list.id,
         name: newCardName,
         desc: "",
         boardId,
       })
+      setCards([...cards, response.data])
       setNewCardName("")
     } catch (error) {
       console.error("Error adding card:", error)
+      alert("Failed to add card: " + error.message)
     } finally {
       setIsAdding(false)
     }

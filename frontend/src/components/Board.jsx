@@ -40,17 +40,21 @@ export default function Board({ boardId }) {
   const handleWebSocketEvent = (event) => {
     if (event.type === "card-created") {
       const { card } = event.data
-      setLists((prevLists) =>
-        prevLists.map((list) => (list.id === card.idList ? { ...list, cards: [...(list.cards || []), card] } : list)),
-      )
+      if (card && card.idList) {
+        setLists((prevLists) =>
+          prevLists.map((list) => (list.id === card.idList ? { ...list, cards: [...(list.cards || []), card] } : list)),
+        )
+      }
     } else if (event.type === "card-updated") {
       const { card } = event.data
-      setLists((prevLists) =>
-        prevLists.map((list) => ({
-          ...list,
-          cards: (list.cards || []).map((c) => (c.id === card.id ? card : c)),
-        })),
-      )
+      if (card) {
+        setLists((prevLists) =>
+          prevLists.map((list) => ({
+            ...list,
+            cards: (list.cards || []).map((c) => (c.id === card.id ? card : c)),
+          })),
+        )
+      }
     } else if (event.type === "card-deleted") {
       const { cardId } = event.data
       setLists((prevLists) =>
@@ -61,7 +65,9 @@ export default function Board({ boardId }) {
       )
     } else if (event.type === "list-created") {
       const { list } = event.data
-      setLists((prevLists) => [...prevLists, list])
+      if (list) {
+        setLists((prevLists) => [...prevLists, { ...list, cards: [] }])
+      }
     }
   }
 
